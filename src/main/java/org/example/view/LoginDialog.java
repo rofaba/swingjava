@@ -51,10 +51,12 @@ public class LoginDialog extends JDialog {
             MainFrame main = new MainFrame();
             main.setSession(session);
             main.setPeliculaRepository(peliRepo);
-            main.initAfterLogin();               // <-- carga la tabla
+            main.initAfterLogin();
+            main.wireActions(peliRepo);
             main.setLocationRelativeTo(this);
             main.setVisible(true);
             dispose();
+
 
 
         } catch (IOException ex) {
