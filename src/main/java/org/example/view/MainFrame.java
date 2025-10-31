@@ -95,6 +95,16 @@ public class MainFrame extends JFrame {
             int row = tblPeliculas.getSelectedRow();
             if (row < 0) { JOptionPane.showMessageDialog(this,"Selecciona una película"); return; }
             var p = peliModel.getAt(row);
+
+            int opt = JOptionPane.showConfirmDialog(
+                    this,
+                    "¿Eliminar \"" + p.getTitle() + "\"?",
+                    "Confirmar eliminación",
+                    JOptionPane.YES_NO_OPTION,
+                    JOptionPane.WARNING_MESSAGE
+            );
+            if (opt != JOptionPane.YES_OPTION) return;
+
             String uid = session.getCurrentUser().getId();
             try {
                 if (repo.deleteById(p.getId(), uid)) {
@@ -133,7 +143,7 @@ public class MainFrame extends JFrame {
         int uid = Integer.parseInt(session.getCurrentUser().getId());
         List<Pelicula> list = peliRepo.findAllByUser(String.valueOf(uid));
         peliModel.setData(list);
-        if (lblEstado != null) lblEstado.setText(list.size() + " películas");
+        if (lblEstado != null) lblEstado.setText(session.getCurrentUser().getEmail());
     }
 
     //ver detalles pelicula

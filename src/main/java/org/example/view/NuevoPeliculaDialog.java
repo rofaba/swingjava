@@ -83,9 +83,11 @@ public class NuevoPeliculaDialog extends JDialog {
             // Guardar: si no hay excepción, consideramos OK
             String uid = session.getCurrentUser().getId();
                 peliRepo.add(p);
-            
+
             // Éxito
-            dispose(); // cierra; el MainFrame hará reload() al volver del setVisible()
+            JOptionPane.showMessageDialog(this, "Película guardada");
+            dispose(); // cierra;
+
 
         } catch (IOException ex) {
             error("Error de acceso a datos");
