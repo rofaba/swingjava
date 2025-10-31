@@ -66,7 +66,8 @@ public class Pelicula {
     public String getDescription(){ return description; }
     public String getImageUrl(){ return imageUrl; }
     public String getUserId(){ return userId; }
-    public void setId(String id){ this.id = id; }
+    public void setId(String id) {this.id = id;}
+
     public void setTitle(String title){ this.title = title; }
     public void setYear(int year){ this.year = year; }
     public void setDirector(String director){ this.director = director; }

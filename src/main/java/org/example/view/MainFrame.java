@@ -1,7 +1,9 @@
 package org.example.view;
 
+import org.example.infra.CsvAuthProvider;
 import org.example.infra.PeliculaRepository;
 import org.example.infra.SessionContext;
+import org.example.infra.UsuarioRepository;
 import org.example.model.Pelicula;
 import org.example.model.PeliculaTableModel;
 
@@ -35,6 +37,7 @@ public class MainFrame extends JFrame {
     private SessionContext session;
     private PeliculaRepository peliRepo;
     private PeliculaTableModel peliModel;
+    private CsvAuthProvider userRepo;
 
     public MainFrame() {
         setContentPane(rootPanel);
@@ -133,8 +136,15 @@ public class MainFrame extends JFrame {
         btnLogout.addActionListener(e -> {
             session.clear();
             dispose();
-            // Si quieres volver al login, lo hacemos luego desde Main.
+            SwingUtilities.invokeLater(() -> {
+                var login = new LoginDialog();
+                login.setAuth(new CsvAuthProvider((UsuarioRepository) userRepo, SessionContext.get()));
+                login.setSession(SessionContext.get());
+                login.setLocationRelativeTo(null);
+                login.setVisible(true);
+            });
         });
+
     }
 
     // Recarga de datos

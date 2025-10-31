@@ -12,6 +12,7 @@ import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 import static java.lang.String.valueOf;
 
@@ -94,11 +95,16 @@ public class CsvPeliculaRepository implements PeliculaRepository {
      */
     @Override
     public void add(Pelicula pelicula) throws IOException {
+
+        if (pelicula.getId() == null || pelicula.getId().isBlank()) {
+            pelicula.setId(java.util.UUID.randomUUID().toString());
+        }
+
         ensureFile();
         String safeDesc = pelicula.getDescription() == null ? "" : pelicula.getDescription().replace(",", " ");
         String genre = pelicula.getGenre() == null ? "" : pelicula.getGenre().replace(",", " ");
         String line = String.join(",",
-                pelicula.getId(),
+                nullToEmpty(pelicula.getId()),
                 nullToEmpty(pelicula.getTitle()),
                 nullToEmpty(valueOf(pelicula.getYear())),
                 nullToEmpty(pelicula.getDirector()),
