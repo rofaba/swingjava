@@ -108,9 +108,17 @@ public class MainFrame extends JFrame {
         });
 
         btnAnadir.addActionListener(e -> {
-            JOptionPane.showMessageDialog(this,"Alta de película (pendiente diálogo).");
-            // Luego: abrir JDialog de alta, repo.add(...), reload();
+            NuevoPeliculaDialog dlg = new NuevoPeliculaDialog();
+            dlg.setSession(session);
+            dlg.setPeliculaRepository(peliRepo);
+            dlg.setLocationRelativeTo(this);
+            dlg.setVisible(true);
+            try { reload(); } catch (IOException ex) {
+                JOptionPane.showMessageDialog(this, "Error al recargar", "Error", JOptionPane.ERROR_MESSAGE);
+            }
         });
+
+
 
         btnLogout.addActionListener(e -> {
             session.clear();

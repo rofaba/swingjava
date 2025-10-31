@@ -30,7 +30,9 @@ public class Pelicula {
         this.id = id; this.title = title; this.year = year; this.director = director;
         this.description = description; this.genre = genero; this.imageUrl = imageUrl; this.userId = userId;
     }
-
+    public Pelicula() {
+        // constructor vacío
+    }
     /**
      * Crea un objeto {@code Pelicula} a partir de una línea en formato CSV.
      *
@@ -68,7 +70,7 @@ public class Pelicula {
     public void setTitle(String title){ this.title = title; }
     public void setYear(int year){ this.year = year; }
     public void setDirector(String director){ this.director = director; }
-    public void setGenero(String genero) { this.genre = genero; }
+    public void setGenre(String genero) { this.genre = genero; }
     public void setDescription(String description){ this.description = description; }
     public void setImageUrl(String imageUrl){ this.imageUrl = imageUrl; }
     public void setUserId(String userId){ this.userId = userId; }
