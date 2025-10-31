@@ -11,7 +11,7 @@ import java.io.IOException;
 public class LoginDialog extends JDialog {
 
 
-    private JPanel rootPanel;           // <- en el .form, field name = rootPanel
+    private JPanel rootPanel;
     private JTextField txtEmail;
     private JPasswordField txtPassword;
     private JButton btnEntrar;
@@ -31,13 +31,13 @@ public class LoginDialog extends JDialog {
         btnEntrar.addActionListener(e -> onEntrar());
     }
 
-    // ----- Cableado -----
+    // Cableado
     public void setAuth(AuthProvider auth)         { this.auth = auth; }
     public void setSession(SessionContext session) { this.session = session; }
     public void setPeliculaRepository(PeliculaRepository peliRepo) {
         this.peliRepo = peliRepo;
     }
-    // ----- Handlers -----
+    // Handlers
     private void onEntrar() {
         try {
             var user = auth.login(getEmail(), getPassword());
@@ -45,17 +45,21 @@ public class LoginDialog extends JDialog {
                 JOptionPane.showMessageDialog(this, "Credenciales inválidas", "Error", JOptionPane.ERROR_MESSAGE);
                 return;
             }
-            // El CsvAuthProvider ya dejó la sesión poblada; por si acaso:
+            // El CsvAuthProvider ya dejó la sesión lista, pero por si acaso
             if (session.getCurrentUser() == null) session.setCurrentUser(user);
+
+            dispose();
 
             MainFrame main = new MainFrame();
             main.setSession(session);
             main.setPeliculaRepository(peliRepo);
             main.initAfterLogin();
-            main.wireActions(peliRepo);
             main.setLocationRelativeTo(this);
+
+            main.wireActions(peliRepo);
+
             main.setVisible(true);
-            dispose();
+
 
 
 
@@ -64,7 +68,8 @@ public class LoginDialog extends JDialog {
         }
     }
 
-    // ----- Getters mínimos -----
+    // getter
+
     public String getEmail()    { return txtEmail.getText().trim(); }
     public String getPassword() { return new String(txtPassword.getPassword()).trim(); }
     public JButton getBtnEntrar() { return btnEntrar; }

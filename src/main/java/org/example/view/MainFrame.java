@@ -7,8 +7,12 @@ import org.example.model.PeliculaTableModel;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.util.List;
+import org.example.view.DetallePeliculaDialog;
+
 
 public class MainFrame extends JFrame {
 
@@ -37,13 +41,24 @@ public class MainFrame extends JFrame {
         setTitle("Catálogo de Películas");
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         pack();
+
+        btnDetalles.addActionListener(e -> {
+            int row = tblPeliculas.getSelectedRow();
+            if (row < 0) { JOptionPane.showMessageDialog(this,"Selecciona una película"); return; }
+            var p = peliModel.getAt(row);
+
+            DetallePeliculaDialog dlg = new DetallePeliculaDialog();
+            dlg.setPelicula(p);
+            dlg.setLocationRelativeTo(this);
+            dlg.setVisible(true);
+        });
     }
 
-    // ----- Inyección -----
+    // Inyección
     public void setSession(SessionContext session) { this.session = session; }
     public void setPeliculaRepository(PeliculaRepository repo) { this.peliRepo = repo; }
 
-    // ----- Inicialización tras login (cargar tabla + render básico) -----
+    // Inicialización tras login
     public void initAfterLogin() throws IOException {
         peliModel = new PeliculaTableModel();
         tblPeliculas.setModel(peliModel);
@@ -51,7 +66,7 @@ public class MainFrame extends JFrame {
         tblPeliculas.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         tblPeliculas.setAutoResizeMode(JTable.AUTO_RESIZE_SUBSEQUENT_COLUMNS);
 
-        // Alinear columnas (izq: texto, centro: año)
+        // Alinear columnas
         var left = new DefaultTableCellRenderer();
         left.setHorizontalAlignment(SwingConstants.LEFT);
         var center = new DefaultTableCellRenderer();
@@ -74,32 +89,22 @@ public class MainFrame extends JFrame {
         tblPeliculas.getColumnModel().getColumn(4).setPreferredWidth(120); // Género
     }
 
-    // ----- Acciones de botones (simple, nivel inicial) -----
+    // botones
     public void wireActions(PeliculaRepository repo) {
         btnEliminar.addActionListener(e -> {
             int row = tblPeliculas.getSelectedRow();
             if (row < 0) { JOptionPane.showMessageDialog(this,"Selecciona una película"); return; }
             var p = peliModel.getAt(row);
-            int uid = Integer.parseInt(session.getCurrentUser().getId());
+            String uid = session.getCurrentUser().getId();
             try {
-                if (repo.deleteById(p.getId(), String.valueOf(uid))) {
+                if (repo.deleteById(p.getId(), uid)) {
                     reload();
                 } else {
                     JOptionPane.showMessageDialog(this,"No se pudo eliminar","Error",JOptionPane.ERROR_MESSAGE);
                 }
             } catch (IOException ex) {
-                throw new RuntimeException(ex);
+                JOptionPane.showMessageDialog(this,"Error de acceso a datos","Error",JOptionPane.ERROR_MESSAGE);
             }
-        });
-
-        btnDetalles.addActionListener(e -> {
-            int row = tblPeliculas.getSelectedRow();
-            if (row < 0) { JOptionPane.showMessageDialog(this,"Selecciona una película"); return; }
-            var p = peliModel.getAt(row);
-            JOptionPane.showMessageDialog(this,
-                    "Título: " + p.getTitle() + "\nAño: " + p.getYear() +
-                            "\nDirector: " + p.getDirector() + "\nGénero: " + p.getGenre(),
-                    "Detalle", JOptionPane.INFORMATION_MESSAGE);
         });
 
         btnAnadir.addActionListener(e -> {
@@ -114,7 +119,7 @@ public class MainFrame extends JFrame {
         });
     }
 
-    // ----- Recarga de datos -----
+    // Recarga de datos
     private void reload() throws IOException {
         if (session == null || session.getCurrentUser() == null || peliRepo == null) return;
         int uid = Integer.parseInt(session.getCurrentUser().getId());
@@ -123,7 +128,10 @@ public class MainFrame extends JFrame {
         if (lblEstado != null) lblEstado.setText(list.size() + " películas");
     }
 
-    // ----- Getters por si los necesitas -----
+    //ver detalles pelicula
+
+
+    // Getters de componentes
     public JTable getTblPeliculas() { return tblPeliculas; }
     public JButton getBtnAnadir() { return btnAnadir; }
     public JButton getBtnEliminar() { return btnEliminar; }

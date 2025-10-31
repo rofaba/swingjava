@@ -23,9 +23,6 @@ public class Main {
             login.setSession(session);
             login.setPeliculaRepository(peliRepo);  // <-- importante para que luego MainFrame cargue datos
 
-
-
-
             login.setLocationRelativeTo(null);
             login.setVisible(true);
         });
