@@ -6,7 +6,9 @@
       <xy x="20" y="20" width="500" height="400"/>
     </constraints>
     <properties/>
-    <border type="none" title="Detalle de la Película"/>
+    <border type="empty" title="Detalle de la Película">
+      <size top="12" left="12" bottom="12" right="12"/>
+    </border>
     <children>
       <component id="224c6" class="javax.swing.JLabel">
         <constraints>
@@ -97,7 +99,7 @@
             <properties>
               <horizontalScrollBarPolicy value="31"/>
             </properties>
-            <border type="none" title="Descripción"/>
+            <border type="none"/>
             <children>
               <component id="e501e" class="javax.swing.JTextArea" binding="txtDescripcion">
                 <constraints/>
