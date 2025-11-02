@@ -30,7 +30,7 @@ public class LoginDialog extends JDialog {
         btnEntrar.addActionListener(e -> onEntrar());
     }
 
-    // Wire de dependencias
+    // Dependencias
     public void setAuth(AuthProvider auth)         { this.auth = auth; }
     public void setSession(SessionContext session) { this.session = session; }
     public void setPeliculaRepository(PeliculaRepository peliRepo) {
