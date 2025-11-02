@@ -19,7 +19,6 @@ Incluye un sistema de **autenticación de usuarios** y soporte para mostrar **im
 - **Java 17+**
 - **Swing**
 - **Maven**
-- **Lombok**
 
 ## ▶️ Ejecución
 1. Clonar el repositorio.
