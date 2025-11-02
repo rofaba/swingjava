@@ -9,11 +9,8 @@ public class SessionContext {
 
     private static final SessionContext INSTANCE = new SessionContext();
     public static SessionContext get() { return INSTANCE; }
-
-    private Usuario currentUser; // null = sin sesión
-
+    private Usuario currentUser;
     public Usuario getCurrentUser() { return currentUser; }
-    public boolean isLoggedIn() { return currentUser != null; }
     public void setCurrentUser(Usuario u) { this.currentUser = u; }
     public void clear() { this.currentUser = null; }
 }

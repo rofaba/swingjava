@@ -1,16 +1,14 @@
 package org.example.view;
 
 import org.example.model.Pelicula;
-
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
-import java.io.File;
 import java.net.URL;
 
 public class DetallePeliculaDialog extends JDialog {
 
-    // --- componentes del GUI Builder ---
+    // componentes de la UI
     private JPanel rootPanel;
     private JLabel lblTituloV;
     private JLabel lblAnioV;
@@ -43,7 +41,7 @@ public class DetallePeliculaDialog extends JDialog {
         pack();
     }
 
-    // --- Cargar datos de la película ---
+    // Cargar datos de la película
     public void setPelicula(Pelicula p) {
         if (p == null) return;
 
@@ -57,8 +55,9 @@ public class DetallePeliculaDialog extends JDialog {
         loadImageSafe(p.getImageUrl());
     }
 
-    // --- Cargar imagen local o remota ---
+    // Carga la imagen de forma segura
     private void loadImageSafe(String path) {
+        // si no hay URL mostrar texto
         if (path == null || path.isBlank()) {
             lblImagen.setIcon(null);
             lblImagen.setText("(Sin imagen)");
@@ -66,23 +65,12 @@ public class DetallePeliculaDialog extends JDialog {
         }
 
         try {
-            Image img = null;
+            // Asegurar que tenga esquema http/https
+            String urlStr = (path.startsWith("http://") || path.startsWith("https://"))
+                    ? path
+                    : "https://" + path;
 
-            // Si es una URL (http o https)
-            if (path.startsWith("http://") || path.startsWith("https://")) {
-                URL url = new URL(path);
-                img = ImageIO.read(url);
-            }
-            // Si es un archivo local
-            else {
-                File f = new File(path);
-                if (f.exists()) img = ImageIO.read(f);
-                else {
-                    // Si está en resources (ej: /img/poster.jpg)
-                    var res = getClass().getResource(path.startsWith("/") ? path : "/" + path);
-                    if (res != null) img = ImageIO.read(res);
-                }
-            }
+            Image img = ImageIO.read(new URL(urlStr)); // carga
 
             if (img != null) {
                 Image scaled = img.getScaledInstance(220, 300, Image.SCALE_SMOOTH);
@@ -92,14 +80,13 @@ public class DetallePeliculaDialog extends JDialog {
                 lblImagen.setIcon(null);
                 lblImagen.setText("(No se pudo cargar)");
             }
-
         } catch (Exception e) {
             lblImagen.setIcon(null);
             lblImagen.setText("(No se pudo cargar)");
         }
     }
 
-    // --- helper simple ---
+    // helper para valores nulos o vacíos
     private static String nz(String s) {
         return (s == null || s.isBlank()) ? "-" : s;
     }

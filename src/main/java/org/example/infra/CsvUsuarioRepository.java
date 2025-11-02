@@ -1,7 +1,6 @@
 package org.example.infra;
 
 import org.example.model.Usuario;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -22,7 +21,7 @@ public class CsvUsuarioRepository implements UsuarioRepository {
      * Busca un usuario por su email.
      * @param email email del usuario
      * @return Optional con el usuario si se encuentra, o vacío si no
-     * @throws IOException si hay un error de E/S
+        * @throws IOException si hay un error de E/S
      */
     @Override
     public Optional<Usuario> findByEmail(String email) throws IOException {
@@ -48,17 +47,6 @@ public class CsvUsuarioRepository implements UsuarioRepository {
             }
         }
         return Optional.empty();
-    }
-/**
-     * Busca un usuario por su id.
-     * @param id id del usuario
-     * @return Optional con el usuario si se encuentra, o vacío si no
-     * @throws IOException si hay un error de E/S
-     */
-
-    @Override
-    public Optional<Usuario> findById(String id) throws IOException {
-        return readFirstMatch(0, id);
     }
 /**
      * Lee el primer usuario que coincide en el índice y valor dados.

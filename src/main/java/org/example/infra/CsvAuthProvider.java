@@ -1,9 +1,9 @@
 package org.example.infra;
-
 import org.example.model.Usuario;
 import java.io.IOException;
 import java.util.Optional;
 
+/** Autenticación simple contra el CSV. */
 public class CsvAuthProvider implements AuthProvider {
 
     private final UsuarioRepository usuarios;
@@ -25,12 +25,22 @@ public class CsvAuthProvider implements AuthProvider {
 
         Usuario user = u.get();
         if (!p.equals(user.getPassword())) return null;
-
-        session.setCurrentUser(user); // guarda sesión aquí (simple)
+        session.setCurrentUser(user); // guarda sesión aquí
         return user;
     }
 
-    @Override public void logout() { session.clear(); }
-    @Override public Usuario getCurrentUser() { return session.getCurrentUser(); }
-    @Override public boolean isLoggedIn() { return session.isLoggedIn(); }
+
+    @Override
+    public void logout() {
+    }
+
+    @Override
+    public Usuario getCurrentUser() {
+        return null;
+    }
+
+    @Override
+    public boolean isLoggedIn() {
+        return false;
+    }
 }

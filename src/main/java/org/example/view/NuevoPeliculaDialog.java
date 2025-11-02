@@ -3,13 +3,12 @@ package org.example.view;
 import org.example.infra.PeliculaRepository;
 import org.example.infra.SessionContext;
 import org.example.model.Pelicula;
-
 import javax.swing.*;
 import java.io.IOException;
 
 public class NuevoPeliculaDialog extends JDialog {
 
-    // --- componentes (GUI Builder) ---
+    // Componentes gráficos
     private JPanel rootPanel;
     private JTextField txtTitulo;
     private JTextField txtAnio;
@@ -20,7 +19,7 @@ public class NuevoPeliculaDialog extends JDialog {
     private JButton btnGuardar;
     private JButton btnCancelar;
 
-    // --- dependencias ---
+    // Dependencias
     private SessionContext session;
     private PeliculaRepository peliRepo;
 
@@ -42,11 +41,11 @@ public class NuevoPeliculaDialog extends JDialog {
         setResizable(false);
     }
 
-    // inyección
+    // Inyección de dependencias
     public void setSession(SessionContext session) { this.session = session; }
     public void setPeliculaRepository(PeliculaRepository repo) { this.peliRepo = repo; }
 
-    // guardar
+    // Handlers
     private void onGuardar() {
         String titulo = nz(txtTitulo.getText());
         String anioStr = nz(txtAnio.getText());
@@ -69,7 +68,7 @@ public class NuevoPeliculaDialog extends JDialog {
             error("Dependencias no inicializadas"); return;
         }
 
-        // Construir película
+        // Crear objeto Pelicula
         Pelicula p = new Pelicula();
         try {
             p.setTitle(titulo);
@@ -80,22 +79,20 @@ public class NuevoPeliculaDialog extends JDialog {
             if (!imagen.isBlank()) { try { p.setImageUrl(imagen); } catch (Throwable ignore) {} }
             try { p.setUserId(session.getCurrentUser().getId()); } catch (Throwable ignore) {}
 
-            // Guardar: si no hay excepción, consideramos OK
-            String uid = session.getCurrentUser().getId();
-                peliRepo.add(p);
+            // Guardar: si no hay excepción, se asume OK
+            // String uid = session.getCurrentUser().getId();
+            peliRepo.add(p);
 
             // Éxito
             JOptionPane.showMessageDialog(this, "Película guardada");
             dispose(); // cierra;
-
 
         } catch (IOException ex) {
             error("Error de acceso a datos");
         }
     }
 
-
-    // helpers
+    // Helpers
     private static String nz(String s) { return s == null ? "" : s.trim(); }
     private void warn(String msg) { JOptionPane.showMessageDialog(this, msg, "Validación", JOptionPane.WARNING_MESSAGE); }
     private void error(String msg) { JOptionPane.showMessageDialog(this, msg, "Error", JOptionPane.ERROR_MESSAGE); }

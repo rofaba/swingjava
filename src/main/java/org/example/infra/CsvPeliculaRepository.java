@@ -1,7 +1,6 @@
 package org.example.infra;
 
 import org.example.model.Pelicula;
-
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -12,32 +11,15 @@ import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
-
 import static java.lang.String.valueOf;
 
 public class CsvPeliculaRepository implements PeliculaRepository {
     private final Path file;          // ruta al archivo CSV
     private final boolean hasHeader;  // marca si csv tiene cabecera
 
-    /**
-     * Constructor
-     * @param file ruta al archivo CSV
-     * @param hasHeader true si el CSV tiene cabecera
-     */
-
     public CsvPeliculaRepository(Path file, boolean hasHeader) {
         this.file = file;
         this.hasHeader = hasHeader;
-    }
-    /**     * Divide una línea en campos, detectando el separador (',' o ';') según el que aparezca más veces.
-     * @param line línea a dividir
-     * @return array de campos
-     */
-    private static String[] splitFlexible(String line) {
-        String sep = (line.chars().filter(ch -> ch == ';').count()
-                >= line.chars().filter(ch -> ch == ',').count()) ? ";" : ",";
-        return line.split(java.util.regex.Pattern.quote(sep), 8); // ← hasta 8 campos
     }
     /**
      * Busca todas las películas asociadas a un usuario.
@@ -56,10 +38,9 @@ public class CsvPeliculaRepository implements PeliculaRepository {
                 if (line.isBlank()) continue;
                 if (line.charAt(0) == '\uFEFF') line = line.substring(1);
 
-                String[] p = splitFlexible(line);
-                if (p.length < 7) continue; // mínimo 7
-
-                // Mapeo: 7 campos (sin género) o 8 campos (con género)
+                String[] p = line.split(",", 8);
+                if (p.length < 7) continue;
+                // Mapeo: 8 campos
                 String id       = p[0].trim();
                 String title    = p[1].trim();
                 String yearStr  = p[2].trim();
@@ -71,7 +52,6 @@ public class CsvPeliculaRepository implements PeliculaRepository {
 
                 if (uid.equals(userId)) {
                     int year = 0; try { year = Integer.parseInt(yearStr); } catch (Exception ignore) {}
-
                     out.add(new Pelicula(id, title, year, director, desc, genero, imageUrl, uid));
                 }
             }
@@ -79,22 +59,15 @@ public class CsvPeliculaRepository implements PeliculaRepository {
         return out;
     }
 
-/**     * Busca una película por su ID y el ID del usuario.
-     * @param id ID de la película
-     * @param userId ID del usuario
-     * @return Optional con la película si se encuentra, vacío si no
-     * @throws IOException si hay un error de E/S
-     */
-    @Override
-    public Optional<Pelicula> findById(String id, String userId) throws IOException {
-        return findAllByUser(userId).stream().filter(m -> m.getId().equals(id)).findFirst();
-    }
 /**     * Añade una nueva película al repositorio.
      * @param pelicula película a añadir
-     * @throws IOException si hay un error de E/S
+
      */
+
     @Override
     public void add(Pelicula pelicula) throws IOException {
+
+        //se asegura el id ahora, solucionando un bug en que se guardaban con id null
 
         if (pelicula.getId() == null || pelicula.getId().isBlank()) {
             pelicula.setId(java.util.UUID.randomUUID().toString());
@@ -125,6 +98,7 @@ public class CsvPeliculaRepository implements PeliculaRepository {
      * @return true si se eliminó la película, false si no se encontró
      * @throws IOException si hay un error de E/S
      */
+
     @Override
     public boolean deleteById(String id, String userId) throws IOException {
         ensureFile();
@@ -134,7 +108,7 @@ public class CsvPeliculaRepository implements PeliculaRepository {
         int start = 0;
 
         if (hasHeader && !lines.isEmpty()) {
-            out.add(lines.get(0));
+            out.add(lines.getFirst());
             start = 1;
         }
 
@@ -166,12 +140,6 @@ public class CsvPeliculaRepository implements PeliculaRepository {
             }
         }
     }
-/**     * Convierte una cadena a entero de forma segura, devolviendo 0 en caso de error.
-     * @param s cadena a convertir
-     * @return entero convertido o 0 si hay error
-     */
-    private static int safeInt(String s) {
-        try { return Integer.parseInt(s.trim()); } catch (Exception e) { return 0; }
-    }
+
     private static String nullToEmpty(String s){ return s == null ? "" : s; }
 }

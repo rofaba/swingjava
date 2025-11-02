@@ -29,8 +29,6 @@ public class PeliculaTableModel extends AbstractTableModel {
         };
     }
 
-    @Override public boolean isCellEditable(int r, int c) { return false; }
-
     @Override public Object getValueAt(int r, int c) {
         var p = data.get(r);
         return switch (c) {

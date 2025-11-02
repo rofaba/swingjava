@@ -35,7 +35,6 @@ public class Pelicula {
     }
     /**
      * Crea un objeto {@code Pelicula} a partir de una línea en formato CSV.
-     *
      * @param line Línea en formato CSV.
      * @return Objeto {@code Pelicula}.
      */
@@ -48,7 +47,6 @@ public class Pelicula {
 
     /**
      * Convierte el objeto {@code Pelicula} a una representación en formato CSV.
-     *
      * @return Representación en formato CSV.
      */
     public String toCsv() {

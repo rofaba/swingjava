@@ -6,19 +6,14 @@ import org.example.infra.SessionContext;
 import org.example.infra.UsuarioRepository;
 import org.example.model.Pelicula;
 import org.example.model.PeliculaTableModel;
-
 import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.util.List;
-import org.example.view.DetallePeliculaDialog;
-
 
 public class MainFrame extends JFrame {
 
-    // --- Componentes creados en el GUI Builder (mismos nombres del .form)
+    // Componentes gráficos
     private JPanel rootPanel;
     private JPanel panelTop;
     private JLabel lblTitulo;
@@ -57,7 +52,7 @@ public class MainFrame extends JFrame {
         });
     }
 
-    // Inyección
+    // Inyección de dependencias
     public void setSession(SessionContext session) { this.session = session; }
     public void setPeliculaRepository(PeliculaRepository repo) { this.peliRepo = repo; }
 
@@ -65,7 +60,6 @@ public class MainFrame extends JFrame {
     public void initAfterLogin() throws IOException {
         peliModel = new PeliculaTableModel();
         tblPeliculas.setModel(peliModel);
-
         tblPeliculas.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         tblPeliculas.setAutoResizeMode(JTable.AUTO_RESIZE_SUBSEQUENT_COLUMNS);
 
@@ -74,14 +68,13 @@ public class MainFrame extends JFrame {
         left.setHorizontalAlignment(SwingConstants.LEFT);
         var center = new DefaultTableCellRenderer();
         center.setHorizontalAlignment(SwingConstants.CENTER);
-
         tblPeliculas.setDefaultRenderer(String.class, left);
         tblPeliculas.getColumnModel().getColumn(2).setCellRenderer(center); // Año
 
         // Cargar datos
         reload();
 
-        // Ocultar ID
+        // Ocultar ID (índice 0)
         var idCol = tblPeliculas.getColumnModel().getColumn(0);
         idCol.setMinWidth(0); idCol.setMaxWidth(0); idCol.setPreferredWidth(0);
 
@@ -98,7 +91,6 @@ public class MainFrame extends JFrame {
             int row = tblPeliculas.getSelectedRow();
             if (row < 0) { JOptionPane.showMessageDialog(this,"Selecciona una película"); return; }
             var p = peliModel.getAt(row);
-
             int opt = JOptionPane.showConfirmDialog(
                     this,
                     "¿Eliminar \"" + p.getTitle() + "\"?",
@@ -106,11 +98,15 @@ public class MainFrame extends JFrame {
                     JOptionPane.YES_NO_OPTION,
                     JOptionPane.WARNING_MESSAGE
             );
-            if (opt != JOptionPane.YES_OPTION) return;
+            if (opt != JOptionPane.YES_OPTION) {
+                return;
+            }
 
             String uid = session.getCurrentUser().getId();
             try {
                 if (repo.deleteById(p.getId(), uid)) {
+                    JOptionPane.showMessageDialog(this, "Película Eliminada");
+                    
                     reload();
                 } else {
                     JOptionPane.showMessageDialog(this,"No se pudo eliminar","Error",JOptionPane.ERROR_MESSAGE);
@@ -130,8 +126,6 @@ public class MainFrame extends JFrame {
                 JOptionPane.showMessageDialog(this, "Error al recargar", "Error", JOptionPane.ERROR_MESSAGE);
             }
         });
-
-
 
         btnLogout.addActionListener(e -> {
             session.clear();
@@ -155,9 +149,6 @@ public class MainFrame extends JFrame {
         peliModel.setData(list);
         if (lblEstado != null) lblEstado.setText(session.getCurrentUser().getEmail());
     }
-
-    //ver detalles pelicula
-
 
     // Getters de componentes
     public JTable getTblPeliculas() { return tblPeliculas; }
