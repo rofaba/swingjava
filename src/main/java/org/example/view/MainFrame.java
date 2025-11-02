@@ -106,7 +106,7 @@ public class MainFrame extends JFrame {
             try {
                 if (repo.deleteById(p.getId(), uid)) {
                     JOptionPane.showMessageDialog(this, "Película Eliminada");
-                    
+
                     reload();
                 } else {
                     JOptionPane.showMessageDialog(this,"No se pudo eliminar","Error",JOptionPane.ERROR_MESSAGE);
